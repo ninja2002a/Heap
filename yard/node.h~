@@ -1,0 +1,29 @@
+
+#include <iostream>
+
+using namespace std;
+
+class Node {
+
+ public:
+  Node();
+  
+  void setNext(Node* user);
+  Node* getNext();
+
+  void setLeft(Node* user);
+  Node* getLeft();
+
+  void setRight(Node* user);
+  Node* getRight();
+
+  void setData(int user);
+  int getData();
+  
+ private:
+  Node* next;
+  Node* left;
+  Node* right;
+  int data;
+
+};
