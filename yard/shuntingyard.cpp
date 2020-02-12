@@ -12,10 +12,9 @@ expression will be translated to postfix notation
 Using the postfix notation, the expression will be translated into an expression tree
 The user can decide if the output will be in pre/post/infix notation
 Valid Inputs Are: + - * / ^ ( ) and any integer
-
+Note*: Inputs are not cleared after print
 Start Date: 1/29/2020
  */
-
 
 void push(Node* current0, Node* &stackhead) { //adds item to stack
   if (stackhead == NULL){
@@ -24,7 +23,6 @@ void push(Node* current0, Node* &stackhead) { //adds item to stack
     temp->setData(current0->getData());
     temp->setLeft(current0->getLeft());
     temp->setRight(current0->getRight());
-
     stackhead = temp;
   }
   else if (stackhead != NULL){
@@ -32,20 +30,17 @@ void push(Node* current0, Node* &stackhead) { //adds item to stack
     Node* temp = new Node();
     temp->setData(current0->getData());
     temp->setLeft(current0->getLeft());
-    temp->setRight(current0->getRight());
-    
+    temp->setRight(current0->getRight()); 
     temp->setNext(stackhead);
     stackhead = temp;
   }
 }
 
 void pop(Node* &stackhead){ //removes item from stack in reverse order
-
   if (stackhead != NULL) {
     //move the head of the stack
     stackhead = stackhead->getNext();
   }
-  
   else {
     cout << "no data" << endl;
   }
@@ -87,7 +82,6 @@ int peek(Node* stackhead){ //looks at the top element of the stack
       //element is number
       return 7;
     }
-    
   }
   else {
     //stack has no data
@@ -111,7 +105,6 @@ void enqueue(Node* current0, Node* &queuehead){ //adds item to the back of the q
     //add an item to the end of queue
     Node* queuecurrent = new Node();
     queuecurrent = queuehead;
-    
     while (queuecurrent->getNext() != NULL){
       //go to the end of the queue
       queuecurrent = queuecurrent->getNext();
@@ -137,7 +130,6 @@ void dequeue(Node* current0, Node* &queuehead){
   }
 }
 
-
 char* printpre(Node* current0){ //print in prefix notation
   if (current0 != NULL){
     cout << (char)current0->getData();
@@ -147,43 +139,27 @@ char* printpre(Node* current0){ //print in prefix notation
   return 0;
 }
 
-///*
-void dump(Node* queuehead,Node* stackhead, Node* binaryhead){ //deletes the heads
-  queuehead->setNext(NULL); 
-  stackhead->setNext(NULL); 
-  binaryhead->setNext(NULL);   
-}
-//*/
-
 char* printin(Node* current0){ //prints in infix notation
-  //cout << "printin" << endl;
   if (current0 != NULL){
    printin(current0->getLeft());
    cout << (char)current0->getData();
    printin(current0->getRight());
-   //cout << (char)current0->getData();
-
   }
   return 0;
 }
 
-
-char* printpost(Node* current0){
-  //prints in postfix notation
-  
+char* printpost(Node* current0){ //prints in postfix notation
   if (current0 != NULL){       
     printpost(current0->getLeft());
     printpost(current0->getRight());
     cout << (char)current0->getData();
   }
-  
   return 0;
 }
 
+void parse(char* userexp, int i, Node* &inhead, Node* current0){
+  //converts input into individual items in a linked list
 
-void parse(char* userexp, int i, Node* &inhead, Node* current0){ //converts input into individual items
-
-  
   if (userexp[i] != 32 && userexp[i] != 0){
     //if the user input array[i] is not space and not null (a character)
     //add it to the list
@@ -253,81 +229,19 @@ void convertpostfix(Node* inhead, Node* &stackhead, Node* &queuehead, Node* curr
     
     else if (current0->getData() == 41) {
       //item is right parenthesis ")"
-      
       while (peek(stackhead) != 1){
 	//while the stackhead is not (, pop
 	enqueue(stackhead, queuehead);
 	pop(stackhead);
       }
       pop(stackhead);
-      
       //move forwards
       if (current0->getNext() != NULL) {
 	current0 = current0->getNext();
 	convertpostfix(inhead, stackhead, queuehead, current0);
       }
     }
-    /*
-    else if (current0->getData() == 94) {
-      //item is exponent "^"
-      cout << "item is exponent ^" << endl; 
-      if (peek(stackhead) > peek(current0) || peek(stackhead) == peek(current0)){
-	cout << "stackhead has equal or higher precedence" << endl;
-	//enqueue(stackhead, queuehead);
-	
-	while (peek(stackhead) > 1){
-	  enqueue(stackhead, queuehead);
-	  pop(stackhead);  
-	}
-	
-       
-      
-	push(current0, stackhead);
-	
-	if (current0->getNext() != NULL) {
-	  current0 = current0->getNext();
-	  convertpostfix(inhead, stackhead, queuehead, current0, posthead);
-	}
-      }
-      else if (peek(stackhead) < peek(current0)){
-	push(current0, stackhead);
-	if (current0->getNext() != NULL) {
-	  current0 = current0->getNext();
-	  convertpostfix(inhead, stackhead, queuehead, current0, posthead);
-	}	
-      }
-    }
-    
-    
-    else if (current0->getData() == 42 || current0->getData() == 47) {
-      //item is times or divide "* or /"
-      cout << "item is times or divide" << endl;
-      if (peek(stackhead) > peek(current0) || peek(stackhead) == peek(current0) || peek(stackhead) == 5){
-	
-	//enqueue(stackhead, queuehead);
-	while (peek(stackhead) > 1){
-	  cout << "queueing stack" << endl;
-	  enqueue(stackhead, queuehead);
-	  pop(stackhead);
-	}
    
-       
-	push(current0, stackhead);
-	if (current0->getNext() != NULL) {
-	  current0 = current0->getNext();
-	  convertpostfix(inhead, stackhead, queuehead, current0, posthead);
-	}
-      }
-      else if (peek(stackhead) < peek(current0)){
-	push(current0, stackhead);
-	if (current0->getNext() != NULL) {
-	  current0 = current0->getNext();
-	  convertpostfix(inhead, stackhead, queuehead, current0, posthead);
-	}
-      }
-    }
-    //*/  
-  
     else if (current0->getData() == 43 || current0->getData() == 45 || current0->getData() == 42 || current0->getData() == 47 || current0->getData() == 94) {
       //item is an operator
 
@@ -361,9 +275,9 @@ void convertpostfix(Node* inhead, Node* &stackhead, Node* &queuehead, Node* curr
     }   
 }
 
-    
-  
-void binarytree(Node* current0, Node* &stackhead, Node* binaryhead, Node* queuehead) { //converts postfix notation into a binary tree
+     
+void binarytree(Node* current0, Node* &stackhead, Node* binaryhead, Node* queuehead) {
+  //converts postfix notation into a binary tree
   //to build the tree, function pushes numbers onto the stack until it reaches an operator
   //when an operator is found, the top two items are popped and made the right and left nodes
   //(the first popped becomes the right, and the second popped becomes the left)
@@ -372,16 +286,12 @@ void binarytree(Node* current0, Node* &stackhead, Node* binaryhead, Node* queueh
   if (current0 != NULL) {
     if (current0->getData() >= 48 && current0->getData() <= 57){
       //if the current is a number, push it to the stack
-   
       push(current0, stackhead);
-      
       if (current0->getNext() != NULL){ //moves on to the next item
 	current0 = current0->getNext();
 	binarytree(current0, stackhead, binaryhead, queuehead);
       }
-    }
-
-	
+    }	
     else if (current0->getData() == 42 || current0->getData() == 43 || current0->getData() == 45 || current0->getData() == 47 || current0->getData() == 94) {
       //if the current is equal to an operator
       //pop the top two items on the stack
@@ -399,8 +309,6 @@ void binarytree(Node* current0, Node* &stackhead, Node* binaryhead, Node* queueh
     } 
   }
 }
-
-  
 
 int main(){
   char* userexp = new char[100];
@@ -426,7 +334,7 @@ int main(){
       
       cout << "enter expression" << endl;
       cin.getline(userexp, 100);
-      //cin.get();
+      cin.get();
       
       cout << "You typed: " << userexp << endl;
       parse(userexp, i, inhead, current0);
@@ -439,10 +347,7 @@ int main(){
     }
     
     else if (userinput == 'p') { //triggers print
-      //cout << "how do you want to print? i, t, e" << endl;
-      //cout << "(Infix, Postfix or Prefix notation)" << endl;
-
-      cout << "iNFIX, POStFIX, PReFIX" << endl;
+      cout << "how do you want to print? (iNFIX, POStFIX, PReFIX)" << endl;
 
       cin >> userinput;
       cin.get();
@@ -451,22 +356,14 @@ int main(){
 	current0 = stackhead;
 	printin(current0);
       }
-      
       else if (userinput == 't'){//triggers postfix print
 	current0 = stackhead;
 	printpost(current0);
       }
-      
       else if (userinput == 'e'){ //triggers prefix print
 	current0 = stackhead;
 	printpre(current0);
       }
-      
-    }
-     
-    else if (userinput == 'd'){ //dumps all input data
-      cout << "Dumping (not implemented yet)" << endl;
-      
     }
     else if (userinput == 'q'){ //quits the program
       running = false;
