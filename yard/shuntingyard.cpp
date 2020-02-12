@@ -119,7 +119,7 @@ void enqueue(Node* current0, Node* &queuehead){ //adds item to the back of the q
   } 
 }
 
-void dequeue(Node* current0, Node* &queuehead){
+void dequeue(Node* &queuehead){
   //removes item from the front of the queue
   if (queuehead != NULL) {
     queuehead = queuehead->getNext();
@@ -334,8 +334,6 @@ int main(){
       
       cout << "enter expression" << endl;
       cin.getline(userexp, 100);
-      cin.get();
-      
       cout << "You typed: " << userexp << endl;
       parse(userexp, i, inhead, current0);
       cout << "converting to postfix notation" << endl;
@@ -365,6 +363,16 @@ int main(){
 	printpre(current0);
       }
     }
+    /*
+    else if (userinput == 'c'){
+      inhead = NULL;
+      binaryhead = NULL;
+      current0 = inhead;
+      while (queuehead != NULL){
+	dequeue(queuehead);
+      }
+    }
+    //*/
     else if (userinput == 'q'){ //quits the program
       running = false;
     }
