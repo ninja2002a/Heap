@@ -241,13 +241,23 @@ void convertpostfix(Node* inhead, Node* &stackhead, Node* &queuehead, Node* curr
 	convertpostfix(inhead, stackhead, queuehead, current0);
       }
     }
-   
-    else if (current0->getData() == 43 || current0->getData() == 45 || current0->getData() == 42 || current0->getData() == 47 || current0->getData() == 94) {
+
+    else if (current0->getData() == 94) {
+      
+      //item is exponent "^", push
+	push(current0, stackhead);
+	if (current0->getNext() != NULL) {
+	  current0 = current0->getNext();
+	  convertpostfix(inhead, stackhead, queuehead, current0);
+	} 
+    }
+    
+      else if (current0->getData() == 43 || current0->getData() == 45 || current0->getData() == 42 || current0->getData() == 47) {
       //item is an operator
 
-      if (peek(stackhead) > peek(current0) || peek(stackhead) == peek(current0)){
+      if (peek(stackhead) > peek(current0) || peek(stackhead) == peek(current0) ){
 	//if the stackhead is of equal or greater precedence, enqueue the stack
-	while (peek(stackhead) > 1){
+	while ( peek(stackhead) > 1 && peek(stackhead) == peek(current0) ){
 	  enqueue(stackhead, queuehead);
 	  pop(stackhead);
 	}
@@ -259,7 +269,7 @@ void convertpostfix(Node* inhead, Node* &stackhead, Node* &queuehead, Node* curr
 	}
       }
       
-      else if (peek(stackhead) < peek(current0)){
+      else if (peek(stackhead) < peek(current0) || (peek(stackhead) == peek(current0) && peek(stackhead) != 5) ){
 	//if the stack has lower precedence, push current onto stack
 	push(current0, stackhead);
 	if (current0->getNext() != NULL) {
@@ -272,7 +282,9 @@ void convertpostfix(Node* inhead, Node* &stackhead, Node* &queuehead, Node* curr
     while (peek(stackhead) != 0 && current0->getNext() == NULL){
       enqueue(stackhead, queuehead);
       pop(stackhead);
-    }   
+    }
+
+    
 }
 
      
