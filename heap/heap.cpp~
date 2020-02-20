@@ -1,0 +1,138 @@
+#include <iostream>
+#include <string.h>
+
+using namespace std;
+
+/*
+Heap
+Written By: Starfy100
+Program will read in a string of numbers from user or file
+Program will place each number into a heap and the sort into a max heap
+After the max heap is formed, the resulting tree is printed
+Once the tree is printed, items will be removed from the tree
+Items are removed from largest to smallest and then placed in an output
+
+
+To remove element, swap root (largest) with the most recently added
+Then remove the once-root
+Then recursively max-heapify to make the root the largest item again, repeat
+
+
+To print tree, tab once for every layer of the tree
+The resulting tree will be formed sideways
+ */
+
+
+void drawtree(int heaparr){ //prints the tree
+
+}
+
+void printarr(int heaparray){
+  int p = 0;
+  while (heaparray[p] != 0){
+    cout << heaparray[p] << endl;
+    p++;
+  }
+
+}
+
+void max(int &heaparr){ //rearranges the heap such that each parent node is larger than or equal to the value of its child
+
+}
+
+void uparse(int userexp, int &heaparray, int i){ //reads user input to place in an array
+
+  if (userexp[i] != 32 && userexp[i] != 0){
+    //if user input at postion i is not space/blank 
+    //add to first open position in array
+    int j = 0;
+    while(heaparray[j] != 0){
+      j++;
+    }
+
+    heaparrar[j] = userexp[i];
+    i++;
+    uparse(userexp, heaparray, i);
+    
+  }
+  else if (userexp[i] == 32){
+    i++;
+    uparse(userexp, heaparray, i);
+  }
+  
+  
+}
+
+void fparse(int &heaparr){ //reads in file input to place in an array
+
+}
+
+void printnum(int heaparr){ //prints numbers in order of largest to smallest
+
+}
+
+void pullroot(int heaparr){ //removes the largest value (root) from the heap
+  //removes via swap and recursive max-heapify
+  //the removed item will be printed
+
+}
+
+
+int main(){
+  char userinput;
+  bool running = true;
+  int heaparray[101]; //array to store the heap numbers 
+  int userexp;
+  
+  while (running == true){
+    cout << "What do you want to do?" << endl;
+   
+    cin >> userinput;
+    cin.get();
+
+
+    
+    if (userinput == 'q'){ //quits the program
+      running = false;
+    }
+    
+    else if (userinput == 'e'){ //
+
+      cout << "read in from user or file?" << endl;
+      cin >> userinput;
+      cin.get();
+
+      if (userinput == 'u'){
+      cout << "enter each number followed by a space" << endl;
+      
+
+      cin.getline(userexp, 200);
+      uarse(userexp, heaparray);
+      
+      }
+      
+      else if (userinput == 'f'){
+	cout << "reading in from file" << endl;
+
+
+	fparse(heaparray);
+      }
+
+      
+    }
+    else if (userinput == 'p'){
+      //drawtree();
+
+
+      //printnum();
+
+    }
+    
+    
+    
+  }
+  
+
+  
+  return 0;
+}
