@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <fstream>
+#include <math.h>
 
 using namespace std;
 
@@ -24,14 +25,30 @@ The resulting tree will be formed sideways
  */
 
 
-//TO DO: Read from file, output in order of largest to smallest, print tree
+//TO DO: remove debug code
 
-void drawtree(int* heaparray){ //prints the tree
+void drawtree(int* heaparray, int layer, int h){ //prints the tree
+  //tab (/t) for every laayer
+  
+  if (heaparray[(2*h)+1] != 0){ //if right child is not null
+    //find right-most item
+    drawtree(heaparray, layer+1, (2*h)+1 );
+  }
+    for (int i = 0; i < layer; i++){
+      //print tab for every layer of the tree
+      cout << '\t';
+    }
+    cout << heaparray[h] << endl;
 
+  if (heaparray[(2*h)] != 0){
+    //cout << "recursion here" << endl;
+    drawtree(heaparray, layer+1, h*2);
+  }
+  
 }
-
+/*
 void printarray(int* heaparray){
-  int p = 0;
+  int p = 1;
   cout << "printing heap array" << endl;
   while (heaparray[p] != 0){
     cout << heaparray[p] << " ";
@@ -39,105 +56,118 @@ void printarray(int* heaparray){
   }
   cout << endl;  
 }
+//*/
 
-void max(int* heaparray, int h){ //rearranges the heap such that each parent node is larger than or equal to the value of its child
+void uparse(char* userexp, int* heaparray, int i, int h){
+  //reads user input to place in an array
   
-  if(heaparray[h] != 0) { //if array @ h is not null
-
-    if (heaparray[(2*h)+1] != 0){ //if left child is not null 
-      if (heaparray[h] < heaparray[(2*h) + 1]){
-	//if left child of parent position h is greater, swap position
-	cout << "left child is greater than parent, swap" << endl;
-	int temp = heaparray[h];
-	heaparray[h] = heaparray[(2*h) + 1];
-	heaparray[(2*h)+1] = temp;
-	
-	h = 0; //restart from the top
-	max(heaparray, h);
-	
-      }
-      
-      ///*
-      else {
-	//if the parent is greater, move on
-	h++;
-	max(heaparray, h);
-      }
-      //*/
-    }
-    
-    if(heaparray[(2*h)+2] != 0){ //if right child is not null
-      if (heaparray[h] < heaparray[(2*h) + 2]){ 
-	//if right child of parent position h is greater, swap position 
-	cout << "right child is greater than parent, swap" << endl;
-	int temp = heaparray[h];
-	heaparray[h] = heaparray[(2*h)+2];
-	heaparray[(2*h)+2] = temp;
-	
-	h = 0; //restart from the top	
-	max(heaparray, h);
-
-      }
-      ///*
-      else{
-	//if the parent is greater, move on
-	h++;
-	max(heaparray, h);
-      }
-      //*/
-      
-    }
-
-  } 
-  
-}
-
-void uparse(char* userexp, int* heaparray, int i, int h){ //reads user input to place in an array
- 
   for (i = 0; i < 505; i++) {
     if (userexp[i] != 32 && userexp[i] != 0) {
       //if userexp is not a space or null
-      //temp is userexp
       
-      heaparray[h] = (int)userexp[i] - 48; //convert char userexp to int heaparray
-      int temp = 0;
+      int converted = (int)userexp[i] - 48; //convert char userexp to int heaparray
+      int temp = 0; //variable to store subsequent digits
+      while (userexp[i+1] != 32 && userexp[i+1] != 0){
+	//turn the int into a multi-digit int
+	temp = (int)userexp[i+1] - 48;
+	converted = (converted * 10) + temp;
+	i++;
+      }
       
-    ///*
-    while (userexp[i+1] != 32 && userexp[i+1] != 0){
-      temp = (int)userexp[i+1] - 48;
-      heaparray[h] = (heaparray[h] * 10) + temp;
-      //cout << "adding" << endl;
+      //cout << "Converted: " << converted << endl;
+      
+      //travel to the end of array and place
+      while (heaparray[h] != 0){
+	h++;
+      }
+      heaparray[h] = converted;
+      
+      
+      while (h > 1 && heaparray[h] > heaparray[(h/2)]){
+	//swap h and h/2
+	//cout << "swap" << endl;
+	int swap = heaparray[h];
+	heaparray[h] = heaparray[(h/2)];
+	heaparray[(h/2)] = swap;
+	
+	h = (h/2);
+      }
+      h++;
       i++;
-    }
-    //*/
-    
-    //cout << heaparray[j] << endl;
-    h++;
-    i++;
     }
     else {
       i++;
     }
-    
   }
-    
 }
 
 
-void fparse(int* heaparray){ //reads in file input to place in an array
+void fparse(int* heaparray, int i, int h){ //reads in file input to place in an array
   cout << "enter file name" << endl;
-  //cin file name
-  char filename;
-
+  string line;
+  char* filename = new char[100];
+  char* filedata = new char[505];
+ 
+  cin >> filename;
+  cin.get();
+  cout << "reading " << endl;
+  ifstream myfile (filename);
+  if (myfile.is_open()) {
+    while (getline (myfile, line)) {
+    
+      int j = 0;
+      while(line[j] != 0){
+	filedata[j] = line[j];
+	j++;
+      }
+     
+      //cout << "filedata " << filedata << endl;
+    }
+    myfile.close();
+  }
+  else {
+    cout << "unable to open file" << endl;
+  }
   
   //read and copy numbers to heaparray
-  
+  for (i = 0; i < 505; i++) {
+    if (filedata[i] != 32 && filedata[i] != 0) {
+      //if filedata is not a space or null
+      int converted = (int)filedata[i] - 48; //convert char userexp to int heaparray
+      int temp = 0; //variable to store subsequent digits
+      while (filedata[i+1] != 32 && filedata[i+1] != 0){
+      //turn the int into a multi-digit int
+	temp = (int)filedata[i+1] - 48;
+	converted = (converted * 10) + temp;
+	i++;
+      }
+      
+      //place at end of array
+      while (heaparray[h] != 0){
+	h++;
+      }
+      heaparray[h] = converted;
+      
+      while (h > 1 && heaparray[h] > heaparray[(h/2)]){
+	//swap h and h/2
+	int swap = heaparray[h];
+	heaparray[h] = heaparray[(h/2)];
+	heaparray[(h/2)] = swap;
+	h = (h/2);
+      }
+      h++;
+      i++;
+    }
+    else {
+      i++;
+    }
+  }  
 }
 
 void printnum(int* outputarray){ //prints numbers in order of largest to smallest
   //print numbers as they are pulled off of the array
   int p = 0;
-  cout << "printing output array" << endl;
+  //cout << "printing output array" << endl;
   while (outputarray[p] != 0){
     cout << outputarray[p] << " ";
     p++;
@@ -151,22 +181,53 @@ void pullroot(int* heaparray, int* outputarray, int o, int h){
   //removes via swap and recursive max-heapify
   //the removed item will be printed
 
-
-  ///*
-    int r = 0;
-  while (heaparray[r+1] != 0){ 
-  r++;
+  //cout << "while heap is not empty" << endl;
+  while (heaparray[1] != 0){
+    //while the heap is not empty, pull the largest item
+    int r = 1;
+    while (heaparray[r+1] != 0){ 
+      r++;
+    }
+    //cout << "End of heap " << heaparray[r] << endl;
+    
+    //swap first and last items
+    //printarray(heaparray);
+    int temp = heaparray[1];
+    heaparray[1] = heaparray[r];
+    heaparray[r] = 0;
+    //printarray(heaparray);
+    //cout << "swapped" << endl;
+    outputarray[o] = temp;
+    o++;
+    //cout << "o: " << o << endl;
+    h = 1;
+    
+    while (heaparray[h] != 0 && (heaparray[h] < heaparray[h*2] || heaparray[h] < heaparray[(h*2)+1]) ) {
+      //sort array
+      //cout << "sorting" << endl;
+      if (heaparray[(h*2)+1] < heaparray[h*2]) {
+	//if the left child is larger, swap
+	int swap1 = heaparray[h];
+	heaparray[h] = heaparray[h*2];
+	heaparray[h*2] = swap1;
+	//cout << "swapped" << endl;
+	h = h*2;
+      }
+      else if (heaparray[h*2] < heaparray[(h*2)+1]) {
+	//if the right child is larger, swap
+	int swap2 = heaparray[h];
+	heaparray[h] = heaparray[(h*2)+1];
+	heaparray[(h*2)+1] = swap2;
+	//cout << "swapped" << endl;
+	h = (h*2)+1;
+      }
+	
+    }
+    //cout << "after sort" << endl;
+    //printarray(heaparray);
+    
   }
   
-  //swap first and last items
-  int temp;
-  temp = heaparray[0];
-  heaparray[0] = heaparray[r];
-  heaparray[r] = 0;
-
-  outputarray[o] = temp;
-  max(heaparray, h);
-  //*/
 }
 
 
@@ -174,17 +235,18 @@ int main(){
   char userinput;
   bool running = true;
   int* heaparray = new int[101]; //array to store the heap numbers 
+  
   char* userexp = new char[505]; //array to store the user input
 
   int* outputarray = new int [101]; //array to store the output numbers
     
-  int i = 0; //keeps track of position in userexp array, used in uparse() 
+  int i = 0; //keeps track of position in input arrays, used in uparse() & fparse() 
   int o = 0; //keeps track of position in output array, used in pullroot()
+  int h = 1; //keeps track of position in heaparray, used in uparse() & pullroot()
 
-  int h = 0; //keeps track of position in heaparray, used in max()
-    
+  int layer = 0; //keeps track of tree layers
   while (running == true){
-    cout << "What do you want to do? (qUIT, eNTER, pRINT, mAX)" << endl;
+    cout << "What do you want to do? (qUIT, eNTER, pRINT)" << endl;
    
     cin >> userinput;
     cin.get();
@@ -194,7 +256,7 @@ int main(){
       running = false;
     }
     
-    else if (userinput == 'e'){ //
+    else if (userinput == 'e'){ //read from user or file
       cout << "entered 'e'" << endl;
       cout << "read in from user or file?" << endl;
       cin >> userinput;
@@ -202,53 +264,46 @@ int main(){
 
       if (userinput == 'u'){
 	cout << "entered 'u'" << endl;
-	
-	
-	//cin.getline(userexp, 505);
-	//cin >> userexp;
 	cout << "enter each number followed by a space" << endl;
 	cin.getline(userexp, 505);
 	i = 0;
-	h = 0;
+	h = 1;
 	uparse(userexp, heaparray, i, h);
-	cout << "after uparse" << endl;
-	//cout << "sorting" << endl;
-	//h = 0;
-	//max(heaparray, h);
       }
       
       else if (userinput == 'f'){
 	cout << "reading in from file" << endl;
-	//fparse(heaparray);
-	//max(heaparray);
+	fparse(heaparray, i, h);
       }  
     }
-
     
     else if (userinput == 'p'){
-      //drawtree();
+      //drawtree(heaparray, layer, h);
       cout << "entered 'p'" << endl;
-      cout << "printing heaparray" << endl;
-      printarray(heaparray);
-      //printnum();
+      //cout << "printing heaparray" << endl;
+      //printarray(heaparray);
+
+      //cout << "printing outputarray" << endl;
+      //printnum(outputarray);
+
+      cout << "printing tree" << endl;
+      drawtree(heaparray, layer, h);
+      cout << "printing in order of largest to smallest" << endl;
+      h = 1;
+      pullroot(heaparray, outputarray, o, h);
+      printnum(outputarray);
     }
     
-    else if (userinput == 'm'){
-      cout << "entered 'm'" << endl;
-      cout << "maxing heap" << endl;
-      max(heaparray, h);
-    }
-
+    /*
     else if (userinput == 'r'){
       cout << "entered 'r'" << endl;
       cout << "pulling root" << endl;
-      h = 0;
+      h = 1;
       pullroot(heaparray, outputarray, o, h);
     }
+    //*/
     
   }
-  
-
-  
+ 
   return 0;
 }
